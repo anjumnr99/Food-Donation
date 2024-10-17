@@ -6,7 +6,7 @@ import { FcGoogle } from 'react-icons/fc';
 
 const LoginPage = () => {
     return (
-        <div className="border min-h-screen w-full flex flex-col-2 space-x-2">
+        <div className="border min-h-screen w-full flex flex-col-2 bg-gray-50">
             <div className="flex-1 hero rounded-r-[10%] justify-center items-center"
                 style={{
                     backgroundImage: "url(https://i.ibb.co.com/8KP0X8F/top-view-people-preparing-box-with-food-donation-23-2148613304.jpg)",
@@ -32,7 +32,7 @@ const LoginPage = () => {
                     </div>
                 </div>
             </div>
-            <div className="flex-1 justify-center items-center h-full ">
+            <div className="flex-1 justify-center items-center bg-gray-50 h-full ">
                 <div className=" p-8 rounded-lg min-h-full ">
                     <div className="py-5 pl-8 pr-24 flex-auto space-y-2">
                         <h1 className=" text-4xl font-semibold mb-6 ">Log In</h1>
