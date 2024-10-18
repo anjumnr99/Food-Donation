@@ -6,12 +6,12 @@ import { getAuth } from "firebase/auth";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyDOynAqT3XSv3wnnPcXe-xYkOWaluoP3XA",
-  authDomain: "food-donation-auth.firebaseapp.com",
-  projectId: "food-donation-auth",
-  storageBucket: "food-donation-auth.appspot.com",
-  messagingSenderId: "1077346582089",
-  appId: "1:1077346582089:web:325f4e840c5dd9083b8998"
+  apiKey: import.meta.env.VITE_APIKEY,
+  authDomain: import.meta.env.VITE_AUTHDOMAIN,
+  projectId: import.meta.env.VITE_PROJECTID,
+  storageBucket: import.meta.env.VITE_STORAGEBUCKET,
+  messagingSenderId: import.meta.env.VITE_MESSAGINGSENDERID,
+  appId: import.meta.env.VITE_APPID
 };
 
 // Initialize Firebase
