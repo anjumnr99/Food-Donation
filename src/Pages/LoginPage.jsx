@@ -1,10 +1,129 @@
-import { Link } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import facebookIcon from '../assets/facebook_2111398.png';
 import instagramIcon from '../assets/instagram_2111463.png';
 import linkedinIcon from '../assets/linkedin_3992606.png';
 import { FcGoogle } from 'react-icons/fc';
+import Swal from 'sweetalert2';
+import useAxiosPublic from '../Hooks/useAxiosPublic';
+import { useContext } from 'react';
+import { AuthContext } from '../Authentication/AuthProvider';
 
 const LoginPage = () => {
+
+    const { googleLogin, loginWithEmailAndPassword } = useContext(AuthContext);
+    const location = useLocation();
+    const navigate = useNavigate();
+    // console.log(location.state);
+    const axiosPublic = useAxiosPublic();
+    
+    const handleGoogleLogin = () => {
+      googleLogin()
+        .then(result => {
+          console.log(result);
+  
+          const userInfo = {
+            email: result.user?.email,
+            name: result.user?.displayName,
+            image: result.user?.photoURL,
+            role: "general_user"
+          }
+  
+          axiosPublic.post('/users', userInfo)
+            .then(res => {
+              console.log(res.data);
+            //   navigate('/')
+            })
+          // toast.success('Logged Successfully!')
+          const Toast = Swal.mixin({
+            toast: true,
+            position: "top-end",
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+              toast.onmouseenter = Swal.stopTimer;
+              toast.onmouseleave = Swal.resumeTimer;
+            }
+          });
+          Toast.fire({
+            icon: "success",
+            title: 'Logged Successfully!'
+          });
+        //   navigate(location?.state ? location.state : '/')
+        })
+        .catch(err => {
+          // toast.error(err.message)
+          const Toast = Swal.mixin({
+            toast: true,
+            position: "top-end",
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+              toast.onmouseenter = Swal.stopTimer;
+              toast.onmouseleave = Swal.resumeTimer;
+            }
+          });
+          Toast.fire({
+            icon: "error",
+            title: err.message
+          });
+  
+        })
+  
+    };
+    const handleLoginWithEmailAndPassword = e => {
+      e.preventDefault();
+  
+      const email = e.target.email.value;
+      const password = e.target.password.value;
+  
+      console.log(email, password);
+  
+      loginWithEmailAndPassword(email, password)
+        .then(result => {
+  
+          // toast.success('Logged Successfully!')
+          const Toast = Swal.mixin({
+            toast: true,
+            position: "top-end",
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+              toast.onmouseenter = Swal.stopTimer;
+              toast.onmouseleave = Swal.resumeTimer;
+            }
+          });
+          Toast.fire({
+            icon: "success",
+            title: "Signed in successfully"
+          });
+        //   navigate(location?.state ? location.state : '/')
+        })
+        .catch(err => {
+          // toast.error(err.message)
+          const Toast = Swal.mixin({
+            toast: true,
+            position: "top-end",
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+              toast.onmouseenter = Swal.stopTimer;
+              toast.onmouseleave = Swal.resumeTimer;
+            }
+          });
+          Toast.fire({
+            icon: "error",
+            title: err.message
+          });
+          console.log(err);
+        })
+  
+  
+    }
+
     return (
         <div className="border min-h-screen w-full flex flex-col-2 bg-gray-50">
             <div className="flex-1 hero rounded-r-[10%] justify-center items-center"
@@ -39,7 +158,7 @@ const LoginPage = () => {
                         {/* <p className="text-xl font-semibold">Login to your account</p> */}
                         <p className="text-gray-600 font-light max-w-[70%]">Inter your name, valid email address and password to register your account</p>
 
-                        <form
+                        <form onSubmit={handleLoginWithEmailAndPassword}
                             className="flex flex-col gap-5 py-6">
 
 
@@ -72,7 +191,7 @@ const LoginPage = () => {
                         <div className='w-full'>
                             
                             <div className="flex w-full h-16 gap-2 py-2 ">
-                                <button aria-label="Login with Google" type="button" className="flex items-center justify-center w-full p-4 space-x-4 border-2 border-blue-700 hover:border-none hover:bg-red-500 rounded-md focus:ri focus:ri dark:border-gray-400 focus:ri">
+                                <button onClick={handleGoogleLogin} aria-label="Login with Google" type="button" className="flex items-center justify-center w-full p-4 space-x-4 border-2 border-blue-700 hover:border-none hover:bg-red-500 rounded-md focus:ri focus:ri dark:border-gray-400 focus:ri">
                                     <FcGoogle className="text-3xl "></FcGoogle>
                                     <p className="text-blue-800 hover:text-white font-semibold">Continue with Google</p>
                                 </button>
