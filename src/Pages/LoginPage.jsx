@@ -15,113 +15,106 @@ const LoginPage = () => {
     const navigate = useNavigate();
     // console.log(location.state);
     const axiosPublic = useAxiosPublic();
-    
+
     const handleGoogleLogin = () => {
-      googleLogin()
-        .then(result => {
-          console.log(result);
-  
-          const userInfo = {
-            email: result.user?.email,
-            name: result.user?.displayName,
-            image: result.user?.photoURL,
-            role: "general_user"
-          }
-  
-          axiosPublic.post('/users', userInfo)
-            .then(res => {
-              console.log(res.data);
-            //   navigate('/')
+        googleLogin()
+            .then(result => {
+                console.log(result);
+                const userInfo = {
+                    email: result.user?.email,
+                    name: result.user?.displayName,
+                    image: result.user?.photoURL,
+                    role: "general_user"
+                }
+                axiosPublic.post('/users', userInfo)
+                    .then(res => {
+                        console.log(res.data);
+                        navigate('/')
+                    })
+                // toast.success('Logged Successfully!')
+                const Toast = Swal.mixin({
+                    toast: true,
+                    position: "top-end",
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                        toast.onmouseenter = Swal.stopTimer;
+                        toast.onmouseleave = Swal.resumeTimer;
+                    }
+                });
+                Toast.fire({
+                    icon: "success",
+                    title: 'Logged Successfully!'
+                });
+                navigate(location?.state ? location.state : '/')
             })
-          // toast.success('Logged Successfully!')
-          const Toast = Swal.mixin({
-            toast: true,
-            position: "top-end",
-            showConfirmButton: false,
-            timer: 3000,
-            timerProgressBar: true,
-            didOpen: (toast) => {
-              toast.onmouseenter = Swal.stopTimer;
-              toast.onmouseleave = Swal.resumeTimer;
-            }
-          });
-          Toast.fire({
-            icon: "success",
-            title: 'Logged Successfully!'
-          });
-        //   navigate(location?.state ? location.state : '/')
-        })
-        .catch(err => {
-          // toast.error(err.message)
-          const Toast = Swal.mixin({
-            toast: true,
-            position: "top-end",
-            showConfirmButton: false,
-            timer: 3000,
-            timerProgressBar: true,
-            didOpen: (toast) => {
-              toast.onmouseenter = Swal.stopTimer;
-              toast.onmouseleave = Swal.resumeTimer;
-            }
-          });
-          Toast.fire({
-            icon: "error",
-            title: err.message
-          });
-  
-        })
-  
+            .catch(err => {
+                // toast.error(err.message)
+                const Toast = Swal.mixin({
+                    toast: true,
+                    position: "top-end",
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                        toast.onmouseenter = Swal.stopTimer;
+                        toast.onmouseleave = Swal.resumeTimer;
+                    }
+                });
+                Toast.fire({
+                    icon: "error",
+                    title: err.message
+                });
+
+            })
+
     };
     const handleLoginWithEmailAndPassword = e => {
-      e.preventDefault();
-  
-      const email = e.target.email.value;
-      const password = e.target.password.value;
-  
-      console.log(email, password);
-  
-      loginWithEmailAndPassword(email, password)
-        .then(result => {
-  
-          // toast.success('Logged Successfully!')
-          const Toast = Swal.mixin({
-            toast: true,
-            position: "top-end",
-            showConfirmButton: false,
-            timer: 3000,
-            timerProgressBar: true,
-            didOpen: (toast) => {
-              toast.onmouseenter = Swal.stopTimer;
-              toast.onmouseleave = Swal.resumeTimer;
-            }
-          });
-          Toast.fire({
-            icon: "success",
-            title: "Signed in successfully"
-          });
-        //   navigate(location?.state ? location.state : '/')
-        })
-        .catch(err => {
-          // toast.error(err.message)
-          const Toast = Swal.mixin({
-            toast: true,
-            position: "top-end",
-            showConfirmButton: false,
-            timer: 3000,
-            timerProgressBar: true,
-            didOpen: (toast) => {
-              toast.onmouseenter = Swal.stopTimer;
-              toast.onmouseleave = Swal.resumeTimer;
-            }
-          });
-          Toast.fire({
-            icon: "error",
-            title: err.message
-          });
-          console.log(err);
-        })
-  
-  
+        e.preventDefault();
+        const email = e.target.email.value;
+        const password = e.target.password.value;
+        console.log(email, password);
+        loginWithEmailAndPassword(email, password)
+            .then(result => {
+
+                // toast.success('Logged Successfully!')
+                const Toast = Swal.mixin({
+                    toast: true,
+                    position: "top-end",
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                        toast.onmouseenter = Swal.stopTimer;
+                        toast.onmouseleave = Swal.resumeTimer;
+                    }
+                });
+                Toast.fire({
+                    icon: "success",
+                    title: "Signed in successfully"
+                });
+                  navigate(location?.state ? location.state : '/')
+            })
+            .catch(err => {
+                // toast.error(err.message)
+                const Toast = Swal.mixin({
+                    toast: true,
+                    position: "top-end",
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                        toast.onmouseenter = Swal.stopTimer;
+                        toast.onmouseleave = Swal.resumeTimer;
+                    }
+                });
+                Toast.fire({
+                    icon: "error",
+                    title: err.message
+                });
+                console.log(err);
+            })
     }
 
     return (
@@ -145,7 +138,7 @@ const LoginPage = () => {
                         </div>
                         <div className="mt-10">
                             <h1>Don't have an account?</h1>
-                            <Link to={'/sign-up'} className='text-lg font-semibold hover:underline'>Register Now!</Link>
+                            <Link to={'/register'} className='text-lg font-semibold hover:underline'>Register Now!</Link>
                         </div>
 
                     </div>
@@ -189,7 +182,7 @@ const LoginPage = () => {
                         </form>
                         <p className=" text-lg text-center text-gray-600 font-normal">OR</p>
                         <div className='w-full'>
-                            
+
                             <div className="flex w-full h-16 gap-2 py-2 ">
                                 <button onClick={handleGoogleLogin} aria-label="Login with Google" type="button" className="flex items-center justify-center w-full p-4 space-x-4 border-2 border-blue-700 hover:border-none hover:bg-red-500 rounded-md focus:ri focus:ri dark:border-gray-400 focus:ri">
                                     <FcGoogle className="text-3xl "></FcGoogle>

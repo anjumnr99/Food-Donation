@@ -1,14 +1,13 @@
-import { createUserWithEmailAndPassword, GoogleAuthProvider, onAuthStateChanged, signInWithEmailAndPassword, signInWithPopup, signOut, updateProfile } from "firebase/auth";
+import { createUserWithEmailAndPassword, GoogleAuthProvider,  onAuthStateChanged,  sendPasswordResetEmail, signInWithEmailAndPassword,  signInWithPhoneNumber,  signInWithPopup, signOut, updateProfile } from "firebase/auth";
 import { createContext, useEffect, useState } from "react";
 import auth from "./firebase.config";
-
 export const AuthContext = createContext(null);
-
 // eslint-disable-next-line react/prop-types
 const AuthProvider = ({ children }) => {
     const [user, setUser] = useState({});
     const [loading, setLoading] = useState(true);
     const googleProvider = new GoogleAuthProvider();
+    const [confirmationResult, setConfirmationResult] = useState(null);
     // Google login
     const googleLogin = () => {
         setLoading(true);
@@ -55,6 +54,22 @@ const AuthProvider = ({ children }) => {
         )
     }
 
+    const resetPassword=(email)=>{
+        return sendPasswordResetEmail(auth, email)
+    }
+
+    const phoneLogin=(phoneNumber)=>{
+        auth.useDeviceLanguage();
+        const appVerifier = window.recaptchaVerifier;
+
+        return signInWithPhoneNumber(auth, phoneNumber, appVerifier)
+        .then((result) => {
+            setConfirmationResult(result);
+            return result;
+        });
+    }
+
+
     const authInfo = {
         googleLogin,
         signUpWithEmailAndPassword,
@@ -62,7 +77,11 @@ const AuthProvider = ({ children }) => {
         user,
         logOut,
         userUpdate,
-        loading
+        loading,
+        resetPassword,
+        phoneLogin,
+        confirmationResult,
+        setConfirmationResult
     }
     return (
         <AuthContext.Provider value={authInfo}>

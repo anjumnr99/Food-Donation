@@ -26,15 +26,13 @@ const RegisterPage = () => {
             return toast.error('Invalid password. The password must consists with at least one capital letter , one special character and 6 characters ')
 
         }
-
-
         signUpWithEmailAndPassword(email, password)
             .then(res => {
                 userUpdate(name, email)
                     .then(() => {
-                        // setTimeout(() => {
-                        //     window.location.reload();
-                        // }, 1000);
+                        setTimeout(() => {
+                            window.location.reload();
+                        }, 1000);
                         // create user entry in the database
                         const userInfo = {
                             name,
@@ -42,38 +40,29 @@ const RegisterPage = () => {
                             role,
                             password
                         }
-
                         console.log(userInfo);
-
                         axiosPublic.post('/users', userInfo)
                             .then(res => {
                                 if (res.data.insertedId) {
                                     console.log('Successfully The User added to the DB');
-
+                                    const Toast = Swal.mixin({
+                                        toast: true,
+                                        position: "top-end",
+                                        showConfirmButton: false,
+                                        timer: 3000,
+                                        timerProgressBar: true,
+                                        didOpen: (toast) => {
+                                            toast.onmouseenter = Swal.stopTimer;
+                                            toast.onmouseleave = Swal.resumeTimer;
+                                        }
+                                    });
+                                    Toast.fire({
+                                        icon: "success",
+                                        title: "Profile successfully created!"
+                                    });
+                                    navigate('/');
                                 }
                             })
-
-                        const Toast = Swal.mixin({
-                            toast: true,
-                            position: "top-end",
-                            showConfirmButton: false,
-                            timer: 3000,
-                            timerProgressBar: true,
-                            didOpen: (toast) => {
-                                toast.onmouseenter = Swal.stopTimer;
-                                toast.onmouseleave = Swal.resumeTimer;
-                            }
-                        });
-                        Toast.fire({
-                            icon: "success",
-                            title: "Profile successfully created!"
-                        });
-                        // navigate('/');
-
-
-                        // toast.success('Profile successfully created!')
-
-
                     })
             })
             .catch(err => {
@@ -107,7 +96,7 @@ const RegisterPage = () => {
                     name: result.user?.displayName,
                     image: result.user?.photoURL,
                     role: "general_user"
-                    
+
                 }
 
                 axiosPublic.post('/users', userInfo)
@@ -189,8 +178,6 @@ const RegisterPage = () => {
 
                         <form onSubmit={handleSignUpWithEmailAndPassword}
                             className="flex flex-col gap-5 py-6">
-
-
                             <h1 className='text-xl font-semibold'>Full Name</h1>
                             <label className="input input-bordered flex items-center gap-2">
                                 <input type="text"
@@ -214,21 +201,17 @@ const RegisterPage = () => {
                                     className="grow"
                                     placeholder="Enter password" />
                             </label>
-
-
                             <div className="form-control flex flex-row gap-2">
                                 <input type="checkbox" className="checkbox checkbox-success" />
                                 <p className=" text-sm font-medium">I agree with Terms of Service. Terms Of Payments and Privacy Policy</p>
                             </div>
 
-
                             <button type="submit" className="btn bg-emerald-500 hover:bg-emerald-700  text-white text-xl">Login</button>
                         </form>
                         <p className=" text-lg text-center text-gray-600 font-normal">OR</p>
                         <div className='w-full'>
-
                             <div className="flex w-full h-16 gap-2 py-2 ">
-                                <button onClick={handleGoogleLogin } aria-label="Login with Google" type="button" className="flex items-center justify-center w-full p-4 space-x-4 border-2 border-blue-700 hover:border-none hover:bg-red-500 rounded-md focus:ri focus:ri dark:border-gray-400 focus:ri">
+                                <button onClick={handleGoogleLogin} aria-label="Login with Google" type="button" className="flex items-center justify-center w-full p-4 space-x-4 border-2 border-blue-700 hover:border-none hover:bg-red-500 rounded-md focus:ri focus:ri dark:border-gray-400 focus:ri">
                                     <FcGoogle className="text-3xl "></FcGoogle>
                                     <p className="text-blue-800 hover:text-white font-semibold">Continue with Google</p>
                                 </button>
