@@ -21,6 +21,7 @@ const ApplyRequest = () => {
       const requested_by = user?.email;
       const location = e.target?.location?.value;
       const contact_number = e.target?.contact_number?.value;
+      const request_status = "pending"
 
       const newFoodRequest = {
         food_request_id,
@@ -29,7 +30,8 @@ const ApplyRequest = () => {
         note,
         requested_by,
         location,
-        contact_number
+        contact_number,
+        request_status
       }
        console.log(newFoodRequest);
 

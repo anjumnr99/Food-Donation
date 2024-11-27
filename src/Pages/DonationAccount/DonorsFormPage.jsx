@@ -52,23 +52,24 @@ const DonorsFormPage = () => {
         axiosPublic.post('/add-business-donors', donorInfo)
             .then(res => {
                 console.log(res.data);
+                const Toast = Swal.mixin({
+                    toast: true,
+                    position: "top-end",
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                        toast.onmouseenter = Swal.stopTimer;
+                        toast.onmouseleave = Swal.resumeTimer;
+                    }
+                });
+                Toast.fire({
+                    icon: "success",
+                    title: "Account Created successfully"
+                })
                 navigate('/dashboard')
             })
-        const Toast = Swal.mixin({
-            toast: true,
-            position: "top-end",
-            showConfirmButton: false,
-            timer: 3000,
-            timerProgressBar: true,
-            didOpen: (toast) => {
-                toast.onmouseenter = Swal.stopTimer;
-                toast.onmouseleave = Swal.resumeTimer;
-            }
-        });
-        Toast.fire({
-            icon: "success",
-            title: "Account Created successfully"
-        })
+
         .catch(err => {
             // toast.error(err.message)
             const Toast = Swal.mixin({

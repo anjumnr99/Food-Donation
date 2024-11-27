@@ -7,7 +7,7 @@ import { AuthContext } from '../../Authentication/AuthProvider';
 
 
 const IndividualFormPage = () => {
-    const {user} = useContext(AuthContext);
+    const { user } = useContext(AuthContext);
     const navigate = useNavigate();
     const axiosPublic = useAxiosPublic();
     // const [formData, setFormData] = useState({
@@ -40,54 +40,59 @@ const IndividualFormPage = () => {
         const role = "donors";
 
         const donorInfo = {
-            businessName ,
-            contactName ,
-            email ,
-            phone ,
-            website ,
+            businessName,
+            contactName,
+            email,
+            phone,
+            website,
             address,
-            role 
+            role
         }
         console.log(donorInfo);
         axiosPublic.post('/add-individual-donors', donorInfo)
             .then(res => {
                 console.log(res.data);
+                const Toast = Swal.mixin({
+                    toast: true,
+                    position: "top-end",
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                        toast.onmouseenter = Swal.stopTimer;
+                        toast.onmouseleave = Swal.resumeTimer;
+                    }
+                });
+                Toast.fire({
+                    icon: "success",
+                    title: "Account Created successfully"
+                })
+                setTimeout(() => {
+                    window.location.reload();
+                }, 1000);
                 navigate('/dashboard');
-            })
-        const Toast = Swal.mixin({
-            toast: true,
-            position: "top-end",
-            showConfirmButton: false,
-            timer: 3000,
-            timerProgressBar: true,
-            didOpen: (toast) => {
-                toast.onmouseenter = Swal.stopTimer;
-                toast.onmouseleave = Swal.resumeTimer;
-            }
-        });
-        Toast.fire({
-            icon: "success",
-            title: "Account Created successfully"
-        })
-        .catch(err => {
-            // toast.error(err.message)
-            const Toast = Swal.mixin({
-                toast: true,
-                position: "top-end",
-                showConfirmButton: false,
-                timer: 3000,
-                timerProgressBar: true,
-                didOpen: (toast) => {
-                    toast.onmouseenter = Swal.stopTimer;
-                    toast.onmouseleave = Swal.resumeTimer;
-                }
-            });
-            Toast.fire({
-                icon: "error",
-                title: err.message
-            });
 
-        })
+            })
+
+            .catch(err => {
+                // toast.error(err.message)
+                const Toast = Swal.mixin({
+                    toast: true,
+                    position: "top-end",
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                        toast.onmouseenter = Swal.stopTimer;
+                        toast.onmouseleave = Swal.resumeTimer;
+                    }
+                });
+                Toast.fire({
+                    icon: "error",
+                    title: err.message
+                });
+
+            })
 
 
     };
@@ -101,13 +106,13 @@ const IndividualFormPage = () => {
                     <p className=" uppercase text-4xl tracking-[.03em] font-semibold border-b-2 border-dashed border-gray-500 w-fit">Individual Donors account</p>
                 </div>
                 <form className="p-8  rounded-md shadow-md  space-y-4 mx-auto" onSubmit={handleSubmit}>
-                    <TextField label="Contact Name" name="contactName" fullWidth required  className="mb-4" />
-                    <TextField label="Email" name="email" fullWidth readOnly value={user?.email} required type="email"  className="mb-4" />
-                   
-                    <TextField label="Phone" name="phone" fullWidth required type="tel"  className="mb-4" />
-                    <TextField label="Address" name="address" fullWidth required multiline  className="mb-4" />
+                    <TextField label="Contact Name" name="contactName" fullWidth required className="mb-4" />
+                    <TextField label="Email" name="email" fullWidth readOnly value={user?.email} required type="email" className="mb-4" />
+
+                    <TextField label="Phone" name="phone" fullWidth required type="tel" className="mb-4" />
+                    <TextField label="Address" name="address" fullWidth required multiline className="mb-4" />
                     <FormControlLabel
-                        control={<Checkbox name="termsAccepted"  required/>}
+                        control={<Checkbox name="termsAccepted" required />}
                         label="I accept the terms and conditions"
                     />
                     <Button type="submit" variant="contained" color="success" fullWidth className="mt-4">Create</Button>

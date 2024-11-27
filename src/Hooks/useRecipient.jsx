@@ -16,9 +16,9 @@ const useRecipient = () => {
     });
 
     const isRecipient = data?.recipient; // Extract recipient status
-    const findRecipient = data?.findRecipient; // Extract the full object
-console.log(isRecipient, findRecipient);
-    return { isRecipient, findRecipient,isLoading};
+    const recipient = data?.findRecipient; // Extract the full object
+console.log(isRecipient, recipient);
+    return { isRecipient, recipient,isLoading};
 };
 
 export default useRecipient;

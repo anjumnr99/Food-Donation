@@ -4,19 +4,25 @@ import { useEffect, useState } from "react";
 import useRecipient from "../Hooks/useRecipient";
 import useAxiosPublic from "../Hooks/useAxiosPublic";
 import Swal from "sweetalert2";
+import useIndividualDonor from "../Hooks/useIndividualDonor";
+import useBusinessDonor from "../Hooks/useBusinessDonor";
 
 const MyAccountPage = () => {
-    const { findRecipient } = useRecipient();
+    const { recipient } = useRecipient();
+    const {IndividualDonor} = useIndividualDonor();
+    const {businessDonor} = useBusinessDonor();
     const [profileData, setProfileData] = useState(null);
     const [isEditing, setIsEditing] = useState(false);
 
     const axiosPublic = useAxiosPublic();
     // Populate profile data when recipient data is fetched
     useEffect(() => {
-        if (findRecipient) {
-            setProfileData({ ...findRecipient });
+        let data = recipient || IndividualDonor || businessDonor;
+        console.log(data);
+        if (data) {
+            setProfileData({ ...data });
         }
-    }, [findRecipient]);
+    }, [recipient, IndividualDonor, businessDonor]);
 
     // Handle edit mode toggle
     const handleEditToggle = () => {

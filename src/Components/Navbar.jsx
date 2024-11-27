@@ -69,16 +69,20 @@ const Navbar = () => {
     const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = useState(null);
     const navigate = useNavigate();
 
-    const isRecipient = useRecipient();
-    const isIndividualDonor = useIndividualDonor();
-    const isBusinessDonor = useBusinessDonor();
+    const {isRecipient} = useRecipient();
+    const {isIndividualDonor} = useIndividualDonor();
+    const {isBusinessDonor} = useBusinessDonor();
 
 
     useEffect(() => {
         if (isBusinessDonor || isIndividualDonor || isRecipient) {
             setShowDashboard(true);
+        }else{
+            setShowDashboard(false);
         }
     }, [isBusinessDonor, isIndividualDonor, isRecipient]);
+    console.log(isBusinessDonor, isIndividualDonor, isRecipient);
+    console.log(showDashboard);
 
     const isMenuOpen = Boolean(anchorEl);
     const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
@@ -131,21 +135,21 @@ const Navbar = () => {
             open={isMenuOpen}
             onClose={handleMenuClose}
         >
-            <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
             {
-                showDashboard && <MenuItem onClick={handleMenuClose}>
-                    <Link to={'/my-account'}>My account</Link></MenuItem>
+                user && <div className=' border-b-2'>
+                    <MenuItem onClick={handleMenuClose}>{user?.displayName}</MenuItem>
+                    <MenuItem onClick={handleMenuClose}>{user?.email}</MenuItem>
+                </div>
             }
-
             {
-                !showDashboard && <MenuItem onClick={handleMenuClose}><Link to={'/donation-account'}>
+                showDashboard ? <div>
+                    <MenuItem onClick={handleMenuClose}>
+                        <Link to={'/my-account'}>My account</Link></MenuItem>
+                    <MenuItem onClick={handleMenuClose}><Link to={'/dashboard'}>
+                        Dashboard</Link></MenuItem>
+                </div> : <MenuItem onClick={handleMenuClose}><Link to={'/donation-account'}>
                     Create an Account</Link></MenuItem>
             }
-            {
-                showDashboard && <MenuItem onClick={handleMenuClose}><Link to={'/dashboard'}>
-                    Dashboard</Link></MenuItem>
-            }
-
 
             <MenuItem onClick={handleMenuClose}>
                 <button onClick={handleLogOut} className="block w-full  text-md font-semibold text-blue-600 hover:bg-blue-100 dark:hover:bg-blue-600 dark:text-blue-500 dark:hover:text-white"> Logout
