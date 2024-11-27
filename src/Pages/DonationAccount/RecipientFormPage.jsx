@@ -34,7 +34,7 @@ const RecipientFormPage = () => {
             .then(res => {
                 console.log(res.data);
                 console.log(user);
-                navigate('/dashboard');
+                
                 const Toast = Swal.mixin({
                     toast: true,
                     position: "top-end",
@@ -50,6 +50,10 @@ const RecipientFormPage = () => {
                     icon: "success",
                     title: "Account Created successfully"
                 })
+                setTimeout(() => {
+                    window.location.reload();
+                }, 1000);
+                navigate('/dashboard');
             })
 
         .catch(err => {

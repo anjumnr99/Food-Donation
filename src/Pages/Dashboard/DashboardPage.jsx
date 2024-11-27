@@ -4,7 +4,7 @@ import useRecipient from "../../Hooks/useRecipient";
 
 
 const DashboardPage = () => {
-  const isRecipient = useRecipient();
+  const {isRecipient} = useRecipient();
   console.log(isRecipient);
 
   return (

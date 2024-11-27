@@ -4,8 +4,14 @@ import TableCell from '@mui/material/TableCell';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Typography from '@mui/material/Typography';
-import { Avatar, Button, Card, CardContent, Dialog, DialogActions, DialogContent, DialogTitle, Table } from '@mui/material';
-import { useState } from 'react';
+import { Button, Card, CardContent, Dialog, DialogActions, DialogContent, DialogTitle, Table } from '@mui/material';
+import { useContext, useState } from 'react';
+import useFoodRequests from '../../../Hooks/useFoodRequests';
+import { AuthContext } from '../../../Authentication/AuthProvider';
+import useAxiosPublic from '../../../Hooks/useAxiosPublic';
+import { useQuery } from '@tanstack/react-query';
+import Swal from 'sweetalert2';
+import useRecipient from '../../../Hooks/useRecipient';
 
 // function createData(name, calories, fat, carbs, protein, price) {
 //     return {
@@ -122,6 +128,23 @@ import { useState } from 'react';
 const History = () => {
     const [selectedRequest, setSelectedRequest] = useState(null);
     const [open, setOpen] = useState(false);
+    // const {foodRequests,refetch} = useFoodRequests();
+
+    const { user } = useContext(AuthContext);
+    const isRecipient = useRecipient();
+    const axiosPublic = useAxiosPublic();
+   
+    const { data: foodRequest, refetch } = useQuery({
+        queryKey: ['foodRequest'],
+        queryFn: async () => {
+            const res = await axiosPublic.get(`/foodRequest?email=${user?.email}`)
+            console.log(res.data);
+            return res.data;
+        }
+
+    });
+
+    console.log(foodRequest);
 
     const handleDetailsOpen = (request) => {
         setSelectedRequest(request);
@@ -132,33 +155,34 @@ const History = () => {
         setSelectedRequest(null);
         setOpen(false);
     };
-    const userType = "Recipient";
-    const userData = {
-        name: "John Doe",
-        email: "john.doe@example.com",
-        phone: "123-456-7890",
-        avatar: "https://via.placeholder.com/150",
-    };
 
-    const userRequests = [
-        {
-            id: 1,
-            description: "Canned Food",
-            quantity: 20,
-            status: "Pending",
-            notes: "Please deliver before next week.",
-        },
-        {
-            id: 2,
-            description: "Fresh Vegetables",
-            quantity: 10,
-            status: "Completed",
-            notes: "Urgent request fulfilled.",
-        },
-    ];
 
     const handleCancelRequest = (id) => {
         console.log(`Request with ID ${id} has been cancelled.`);
+        axiosPublic.delete(`/foodRequest/${id}`)
+        .then(res => {
+            console.log(res.data);
+            if (res.data?.deletedCount > 0) {
+                
+                const Toast = Swal.mixin({
+                    toast: true,
+                    position: "top-end",
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                      toast.onmouseenter = Swal.stopTimer;
+                      toast.onmouseleave = Swal.resumeTimer;
+                    }
+                  });
+                  Toast.fire({
+                    icon: "success",
+                    title: "Request Canceled!"
+                  });
+                  refetch();
+            }
+
+        })
     };
 
 
@@ -187,7 +211,7 @@ const History = () => {
 
             {/* Requests Section */}
             <Typography variant="h5" className="mb-4 font-bold">
-                {userType === "Recipient" ? "Your Requests" : "Donation Offers"}
+                { isRecipient ? "Your Requests" : "Donation Offers"}
             </Typography>
             <Card className="shadow-lg">
                 <CardContent>
@@ -195,27 +219,27 @@ const History = () => {
                         <TableHead>
                             <TableRow>
                                 <TableCell>Request ID</TableCell>
-                                <TableCell>Item Description</TableCell>
+                                <TableCell>Item </TableCell>
                                 <TableCell>Quantity</TableCell>
                                 <TableCell>Status</TableCell>
                                 <TableCell>Actions</TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {userRequests.map((request) => (
-                                <TableRow key={request.id}>
-                                    <TableCell>{request.id}</TableCell>
-                                    <TableCell>{request.description}</TableCell>
-                                    <TableCell>{request.quantity}</TableCell>
-                                    <TableCell>{request.status}</TableCell>
+                            {foodRequest?.map((request) => (
+                                <TableRow key={request._id}>
+                                    <TableCell>{request?.food_request_id}</TableCell>
+                                    <TableCell>{request?.item_mane}</TableCell>
+                                    <TableCell>{request?.quantity}</TableCell>
+                                    <TableCell>{request?.request_status}</TableCell>
                                     <TableCell >
                                         <div className='flex flex-row gap-2'> 
-                                            {request.status === "Pending" && (
+                                            {request?.request_status === "pending" && (
                                                 <Button
                                                     variant="contained"
                                                     color="error"
                                                     size="small"
-                                                    onClick={() => handleCancelRequest(request.id)}
+                                                    onClick={() => handleCancelRequest(request._id)}
 
                                                 >
                                                     Cancel
@@ -246,13 +270,17 @@ const History = () => {
                     {selectedRequest ? (
                         <div>
                             <Typography variant="h6">
-                                Request ID: {selectedRequest.id}
+                                Request ID: <span className='text-gray-500'>{selectedRequest?.food_request_id}</span>
                             </Typography>
-                            <Typography>Description: {selectedRequest.description}</Typography>
-                            <Typography>Quantity: {selectedRequest.quantity}</Typography>
-                            <Typography>Status: {selectedRequest.status}</Typography>
+                            <Typography>Item Name: <span className='text-gray-500'>{selectedRequest?.item_mane}</span></Typography>
+                            <Typography>Location: <span className='text-gray-500'>{selectedRequest?.location}</span></Typography>
+                            <Typography>Quantity: <span className='text-gray-500'>{selectedRequest?.quantity}</span></Typography>
+                            <Typography>Contact Number: <span className='text-gray-500'>{selectedRequest?.contact_number}</span></Typography>
+                            <Typography>Requested By: <span className='text-gray-500'>{selectedRequest?.requested_by}</span></Typography>
+
+                            <Typography>Status: <span className='text-gray-500'>{selectedRequest?.request_status || "None"}</span></Typography>
                             <Typography>
-                                Additional Notes: {selectedRequest.notes || "None"}
+                                Additional Notes: <span className='text-gray-500'>{selectedRequest?.note || "None"}</span>
                             </Typography>
                         </div>
                     ) : (
