@@ -1,11 +1,12 @@
 import useAxiosPublic from "../Hooks/useAxiosPublic";
 
 
-const AddNotificationContent = (notificationData) => {
+const AddNotificationContent = (notificationData,refetch) => {
     const axiosPublic = useAxiosPublic();
     axiosPublic.post(`/notification/add`, notificationData)
     .then((res) => {
       console.log(res.data);
+      refetch();
       return res.data;
     })
     .catch((err) => {

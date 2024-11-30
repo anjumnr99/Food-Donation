@@ -13,12 +13,11 @@ const DonorsNearbyRequest = () => {
   const { businessDonor } = useBusinessDonor();
   const { IndividualDonor } = useIndividualDonor();
 
-
   const axiosPublic = useAxiosPublic();
   const donorAddress = businessDonor?.address || IndividualDonor?.address;
   console.log(donorAddress);
   const acceptedBy = { acceptedBy: user?.email };
-  const { data: foodRequests, refetch } = useQuery({
+  const { data: foodRequests, refetch, isFetching } = useQuery({
     queryKey: ['foodRequests'],
     queryFn: async () => {
       const res = await axiosPublic.get(`/foodRequest/nearby/${donorAddress}`);
@@ -39,7 +38,7 @@ const DonorsNearbyRequest = () => {
   const handleAcceptDonation = (id, request) => {
     console.log("Accept Donation", id, request);
 
-    axiosPublic.patch(`/foodRequest/accept/${id}`, acceptedBy) // Pass as second argument
+    axiosPublic.patch(`/foodRequest/accept/${id}`, acceptedBy) 
       .then((res) => {
         console.log(res.data);
         if (res.data?.modifiedCount) {
@@ -54,8 +53,8 @@ const DonorsNearbyRequest = () => {
             sent_to,
             from
           }
-          
-          AddNotificationContent(notificationData);
+
+          AddNotificationContent(notificationData, refetch);
         }
       })
       .catch((err) => {
@@ -81,8 +80,8 @@ const DonorsNearbyRequest = () => {
             from
 
           }
-          AddNotificationContent(notificationData);
-          
+          AddNotificationContent(notificationData, refetch);
+
         }
 
 
@@ -91,6 +90,16 @@ const DonorsNearbyRequest = () => {
         console.error("Error accepting donation:", err);
       });
   };
+
+
+
+
+
+  if (isFetching) {
+    return <div className="flex justify-center items-center h-[80vh] ">
+      <div className="w-20 h-20 border-4 border-dashed rounded-full animate-spin border-green-700"></div>
+    </div>
+  }
 
   return (
     <Box sx={{ padding: "20px" }} className="flex flex-row justify-between items-start ">

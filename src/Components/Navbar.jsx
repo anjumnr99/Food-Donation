@@ -14,7 +14,7 @@ import AccountCircle from '@mui/icons-material/AccountCircle';
 import MailIcon from '@mui/icons-material/Mail';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import MoreIcon from '@mui/icons-material/MoreVert';
-import { useContext, useEffect, useState } from 'react';
+import { Fragment, useContext, useEffect, useState } from 'react';
 import { AuthContext } from '../Authentication/AuthProvider';
 import { Link, Navigate, NavLink, useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
@@ -22,7 +22,12 @@ import useRecipient from '../Hooks/useRecipient';
 import useIndividualDonor from '../Hooks/useIndividualDonor';
 import useBusinessDonor from '../Hooks/useBusinessDonor';
 import { green, lightGreen } from '@mui/material/colors';
+import useNotification from '../Hooks/useNotification';
+import { Avatar, CssBaseline, Divider, List, ListItemAvatar, ListItemButton, ListItemIcon, ListItemText, ListSubheader, Paper, Tooltip } from '@mui/material';
+import { Login, Logout, PersonAdd, Settings } from '@mui/icons-material';
 
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import logo from "../assets/food-donation.png";
 const Search = styled('div')(({ theme }) => ({
     position: 'relative',
     borderRadius: theme.shape.borderRadius,
@@ -69,17 +74,22 @@ const Navbar = () => {
     const { user, logOut } = useContext(AuthContext);
     const [anchorEl, setAnchorEl] = useState(null);
     const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = useState(null);
+    const { notifications } = useNotification();
     const navigate = useNavigate();
+    const [notificationCount, setNotificationCount] = useState(notifications?.length || 0);
 
-    const {isRecipient} = useRecipient();
-    const {isIndividualDonor} = useIndividualDonor();
-    const {isBusinessDonor} = useBusinessDonor();
+    const { isRecipient } = useRecipient();
+    const { isIndividualDonor } = useIndividualDonor();
+    const { isBusinessDonor } = useBusinessDonor();
+
+
+    console.log("Notification from nav", notifications);
 
 
     useEffect(() => {
         if (isBusinessDonor || isIndividualDonor || isRecipient) {
             setShowDashboard(true);
-        }else{
+        } else {
             setShowDashboard(false);
         }
     }, [isBusinessDonor, isIndividualDonor, isRecipient]);
@@ -88,6 +98,10 @@ const Navbar = () => {
 
     const isMenuOpen = Boolean(anchorEl);
     const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
+
+    const handleNewNotification = () => {
+        setNotificationCount(0)
+    }
 
     const handleProfileMenuOpen = (event) => {
         setAnchorEl(event.currentTarget);
@@ -211,98 +225,348 @@ const Navbar = () => {
         </Menu>
     );
 
+    const [anchorEl2, setAnchorEl2] = useState(null);
+    const open = Boolean(anchorEl2);
+    const handleClick = (event) => {
+        setAnchorEl2(event.currentTarget);
+    };
+    const handleClose = () => {
+        setAnchorEl2(null);
+    };
 
     return (
-        <Box sx={{ flexGrow: 1 }}>
-            <AppBar position="static" sx={{ backgroundColor: '#505050' }} >
-                <Toolbar>
-                    {/* <IconButton
-                        size="large"
-                        edge="start"
-                        color="inherit"
-                        aria-label="open drawer"
-                        sx={{ mr: 2 }}
-                    >
-                        <MenuIcon />
-                    </IconButton> */}
-                    <Typography
-                        variant="h4"
-                        noWrap
-                        component="div"
-                        sx={{ display: { xs: 'none', sm: 'block' } }}
-                    >
-                        give&take
-                    </Typography>
-                    <Search>
-                        <SearchIconWrapper>
-                            <SearchIcon />
-                        </SearchIconWrapper>
-                        <StyledInputBase
-                            placeholder="Search…"
-                            inputProps={{ 'aria-label': 'search' }}
-                        />
-                    </Search>
-                    <Box sx={{ flexGrow: 1 }} />
+        <nav
+            style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                padding: "20px 50px",
+                backgroundColor: "#000000",
+                color: "#ffffff",
+            }}
+        >
+            <div className='flex'>
+                <img
+                    src={logo}
+                    alt="logo"
+                    style={{ height: "50px", marginRight: "20px" }}
+                />
+                <h1 style={{ fontSize: "30px", fontWeight: "bold" }}>give grub</h1>
+            </div>
+            <div style={{ display: "flex", alignItems: "center", gap: "20px" }}>
+                <Link to="/" style={{ textDecoration: "none", color: "#ffffff" }}>
+                    Home
+                </Link>
+                <Link to="/how-it-works" style={{ textDecoration: "none", color: "#ffffff" }}>
+                    How It Works
+                </Link>
+                <Link to="/about-us" style={{ textDecoration: "none", color: "#ffffff" }}>
+                    About Us
+                </Link>
+                <Link to="/top-donors" style={{ textDecoration: "none", color: "#ffffff" }}>
+                    Top Donors
+                </Link>
+                {
+                    user?.email ? <div>
+                        <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
 
-                    {
-                        user?.email ? <div>
-                            <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
-                                
+                            <Tooltip title="Account settings">
                                 <IconButton
+                                    onClick={handleClick}
                                     size="large"
-                                    aria-label="show 17 new notifications"
-                                    color="inherit"
+                                    sx={{ ml: 2 }}
+                                    aria-controls={open ? 'show new notifications' : undefined}
+                                    aria-haspopup="true"
+                                    aria-expanded={open ? 'true' : undefined}
+
                                 >
-                                    <Badge badgeContent={17} color="error">
-                                        <NotificationsIcon />
+                                    <Badge onClick={handleNewNotification} badgeContent={notificationCount} color="error">
+                                        <NotificationsIcon color='primary' sx={{ fontSize: '2.5rem' }} />
                                     </Badge>
                                 </IconButton>
-                                <IconButton
-                                    size="large"
-                                    edge="end"
-                                    aria-label="account of current user"
-                                    aria-controls={menuId}
-                                    aria-haspopup="true"
-                                    onClick={handleProfileMenuOpen}
-                                    color="inherit"
-                                >
-                                    <AccountCircle />
-                                </IconButton>
-                            </Box>
-                            <Box sx={{ display: { xs: 'flex', md: 'none' } }}>
-                                <IconButton
-                                    size="large"
-                                    aria-label="show more"
-                                    aria-controls={mobileMenuId}
-                                    aria-haspopup="true"
-                                    onClick={handleMobileMenuOpen}
-                                    color="inherit"
-                                >
-                                    <MoreIcon />
-                                </IconButton>
-                            </Box>
-                        </div> : <div className="flex justify-center items-center gap-3">
+                            </Tooltip>
+                            <Menu
+                                anchorEl={anchorEl2}
+                                id="account-menu"
+                                open={open}
+                                onClose={handleClose}
+                                onClick={handleClose}
+                                slotProps={{
+                                    paper: {
+                                        elevation: 0,
+                                        sx: {
+                                            overflow: 'visible',
+                                            filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
+                                            // mt: 1.5,
+                                            '& .MuiAvatar-root': {
+                                                width: 32,
+                                                height: 32,
+                                                ml: -0.5,
+                                                mr: 1,
+                                            },
+                                            '&::before': {
+                                                content: '""',
+                                                display: 'block',
+                                                position: 'absolute',
+                                                top: 0,
+                                                right: 14,
+                                                width: 10,
+                                                height: 10,
+                                                bgcolor: 'background.paper',
+                                                transform: 'translateY(-50%) rotate(45deg)',
+                                                zIndex: 0,
+                                            },
+                                        },
+                                    },
+                                }}
+                                transformOrigin={{ horizontal: 'right', vertical: 'top' }}
+                                anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+                            >
+                                <MenuItem >
+                                    <AppBar color='success'>
+                                        <Toolbar>
+                                            <Typography variant="h6" component="div">
+                                                Notifications
+                                            </Typography>
+                                        </Toolbar>
+                                    </AppBar>
+                                    <List sx={{
+                                        mt: 8,
+                                        width: '300px',
+                                        height: 'max-content',
+                                        overflowY: 'auto',
+                                        overflowX: 'hidden',
+                                    }}>
+                                        {notifications?.map((notification, index) => (
+                                            <Fragment key={notification._id}>
+                                                <ListItemText
+                                                    primary={notification.message}
+                                                    sx={{
+                                                        whiteSpace: 'normal',
+                                                        wordWrap: 'break-word',
+                                                        marginBottom: '10px',
+                                                        marginTop: '10px'
+                                                    }}
+                                                />
+
+                                                {index < notifications.length - 1 && <Divider />}
+                                            </Fragment>
+                                        ))}
+                                    </List>
+                                </MenuItem>
+
+                            </Menu>
 
 
-                            <button className="text-2xl  font-semibold text-blue-500">
-                                <NavLink
-                                    to="/login"
-                                    className={({ isActive, isPending }) =>
-                                        isPending ? "pending" : isActive ? "  text-blue-400 font-bold" : ""
-                                    }
-                                >
-                                    Login
-                                </NavLink>
+                            <IconButton
+                                size="large"
+                                edge="end"
+                                aria-label="account of current user"
+                                aria-controls={menuId}
+                                aria-haspopup="true"
+                                onClick={handleProfileMenuOpen}
+                                color="inherit"
+                            >
+                                <AccountCircle sx={{ fontSize: '3rem' }} />
+                            </IconButton>
+                        </Box>
+                        <Box sx={{ display: { xs: 'flex', md: 'none' } }}>
+                            <IconButton
+                                size="large"
+                                aria-label="show more"
+                                aria-controls={mobileMenuId}
+                                aria-haspopup="true"
+                                onClick={handleMobileMenuOpen}
+                                color="inherit"
+                            >
+                                <MoreIcon />
+                            </IconButton>
+                        </Box>
+                    </div> : <div className="flex justify-center items-center gap-3">
 
-                            </button>
-                        </div>
-                    }
-                </Toolbar>
-            </AppBar>
+
+                        <button className="text-2xl  font-semibold text-blue-500">
+                            <NavLink
+                                to="/login"
+                                className={({ isActive, isPending }) =>
+                                    isPending ? "pending" : isActive ? "  text-blue-400 font-bold" : ""
+                                }
+                            >
+                                Login
+                            </NavLink>
+
+                        </button>
+
+                    </div>
+                }
+
+            </div>
             {renderMobileMenu}
             {renderMenu}
-        </Box>
+        </nav>
     );
 };
 
 export default Navbar;
+
+
+{/* <Box sx={{ flexGrow: 1 }}>
+<AppBar position="static" sx={{ backgroundColor: '#505050' }} >
+    <Toolbar>
+        
+        <Typography
+            variant="h4"
+            noWrap
+            component="div"
+            sx={{ display: { xs: 'none', sm: 'block' } }}
+        >
+            give&take
+        </Typography>
+        <Search>
+            <SearchIconWrapper>
+                <SearchIcon />
+            </SearchIconWrapper>
+            <StyledInputBase
+                placeholder="Search…"
+                inputProps={{ 'aria-label': 'search' }}
+            />
+        </Search>
+        <Box sx={{ flexGrow: 1 }} />
+
+        {
+            user?.email ? <div>
+                <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
+
+                    <Tooltip title="Account settings">
+                        <IconButton
+                            onClick={handleClick}
+                            size="large"
+                            sx={{ ml: 2 }}
+                            aria-controls={open ? 'show new notifications' : undefined}
+                            aria-haspopup="true"
+                            aria-expanded={open ? 'true' : undefined}
+                            
+                        >
+                            <Badge onClick={handleNewNotification} badgeContent={notificationCount} color="error">
+                                <NotificationsIcon color='primary' sx={{ fontSize: '2.5rem' }} />
+                            </Badge>
+                        </IconButton>
+                    </Tooltip>
+                    <Menu
+                        anchorEl={anchorEl2}
+                        id="account-menu"
+                        open={open}
+                        onClose={handleClose}
+                        onClick={handleClose}
+                        slotProps={{
+                            paper: {
+                                elevation: 0,
+                                sx: {
+                                    overflow: 'visible',
+                                    filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
+                                    // mt: 1.5,
+                                    '& .MuiAvatar-root': {
+                                        width: 32,
+                                        height: 32,
+                                        ml: -0.5,
+                                        mr: 1,
+                                    },
+                                    '&::before': {
+                                        content: '""',
+                                        display: 'block',
+                                        position: 'absolute',
+                                        top: 0,
+                                        right: 14,
+                                        width: 10,
+                                        height: 10,
+                                        bgcolor: 'background.paper',
+                                        transform: 'translateY(-50%) rotate(45deg)',
+                                        zIndex: 0,
+                                    },
+                                },
+                            },
+                        }}
+                        transformOrigin={{ horizontal: 'right', vertical: 'top' }}
+                        anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+                    >
+                        <MenuItem >
+                            <AppBar color='success'>
+                                <Toolbar>
+                                    <Typography variant="h6" component="div">
+                                        Notifications
+                                    </Typography>
+                                </Toolbar>
+                            </AppBar>
+                            <List sx={{
+                                mt: 8,
+                                width: '300px',
+                                height: 'max-content',
+                                overflowY: 'auto',
+                                overflowX: 'hidden',
+                            }}>
+                                {notifications?.map((notification, index) => (
+                                    <Fragment key={notification._id}>
+                                        <ListItemText
+                                            primary={notification.message}
+                                            sx={{
+                                                whiteSpace: 'normal',
+                                                wordWrap: 'break-word',
+                                                marginBottom: '10px',
+                                                marginTop: '10px'
+                                            }}
+                                        />
+
+                                        {index < notifications.length - 1 && <Divider />}
+                                    </Fragment>
+                                ))}
+                            </List>
+                        </MenuItem>
+
+                    </Menu>
+
+
+                    <IconButton
+                        size="large"
+                        edge="end"
+                        aria-label="account of current user"
+                        aria-controls={menuId}
+                        aria-haspopup="true"
+                        onClick={handleProfileMenuOpen}
+                        color="inherit"
+                    >
+                        <AccountCircle  sx={{ fontSize: '3rem' }} />
+                    </IconButton>
+                </Box>
+                <Box sx={{ display: { xs: 'flex', md: 'none' } }}>
+                    <IconButton
+                        size="large"
+                        aria-label="show more"
+                        aria-controls={mobileMenuId}
+                        aria-haspopup="true"
+                        onClick={handleMobileMenuOpen}
+                        color="inherit"
+                    >
+                        <MoreIcon />
+                    </IconButton>
+                </Box>
+            </div> : <div className="flex justify-center items-center gap-3">
+
+
+                <button className="text-2xl  font-semibold text-blue-500">
+                    <NavLink
+                        to="/login"
+                        className={({ isActive, isPending }) =>
+                            isPending ? "pending" : isActive ? "  text-blue-400 font-bold" : ""
+                        }
+                    >
+                        Login
+                    </NavLink>
+
+                </button>
+            </div>
+        }
+    </Toolbar>
+</AppBar>
+{renderMobileMenu}
+{renderMenu}
+</Box> */}

@@ -16,7 +16,7 @@ const NearestDonation = () => {
 
   console.log(recipientAddress);
 
-  const { data: donations, refetch, isLoading } = useQuery({
+  const { data: donations, refetch, isFetching } = useQuery({
     queryKey: ['donations'],
     queryFn: async () => {
       const res = await axiosPublic.get(`/donations/nearby/${recipientAddress}`);
@@ -60,7 +60,7 @@ const NearestDonation = () => {
             sent_to,
             from
           }
-          AddNotificationContent(notificationData);
+          AddNotificationContent(notificationData,refetch);
           
         }
         
@@ -89,7 +89,7 @@ const NearestDonation = () => {
             sent_to,
             from
           }
-          AddNotificationContent(notificationData);
+          AddNotificationContent(notificationData,refetch);
          
         }
       })
@@ -98,7 +98,7 @@ const NearestDonation = () => {
       });
   };
 
-  if (isLoading) {
+  if (isFetching) {
     return <div className="flex justify-center items-center h-[80vh] ">
       <div className="w-20 h-20 border-4 border-dashed rounded-full animate-spin border-green-700"></div>
     </div>

@@ -244,215 +244,217 @@ const MyAccountPage = () => {
 
 
     return (
-        <Box
-            sx={{
-                maxWidth: "800px",
-                margin: "20px auto",
-                padding: "20px",
-                backgroundColor: "#fff",
-                borderRadius: "8px",
-                boxShadow: 3,
-            }}
-        >
-            <Box sx={{ textAlign: "center", mb: 2 }}>
-                <Avatar sx={{ width: 64, height: 64, margin: "0 auto" }}>
-                    {profileData.name?.[0]?.toUpperCase() || ""}
-                </Avatar>
-                <Typography variant="h6" sx={{ mt: 2 }}>
-                    {
-                        isBusinessDonor ? (profileData.businessName || "User") : (profileData.name || "User")
-                    }
-                </Typography>
-                <Typography variant="body2" className="uppercase">
-                    {profileData.role}
-                </Typography>
+        <div className=" bg-green-100 py-8">
+            <Box
+                sx={{
+                    maxWidth: "800px",
+                    margin: "20px auto",
+                    padding: "20px",
+                    backgroundColor: "lightGray",
+                    borderRadius: "8px",
+                    boxShadow: 3,
+                }}
+            >
+                <Box sx={{ textAlign: "center", mb: 2 }}>
+                    <Avatar sx={{ width: 64, height: 64, margin: "0 auto" }}>
+                        {profileData.name?.[0]?.toUpperCase() || ""}
+                    </Avatar>
+                    <Typography variant="h6" sx={{ mt: 2 }}>
+                        {
+                            isBusinessDonor ? (profileData.businessName || "User") : (profileData.name || "User")
+                        }
+                    </Typography>
+                    <Typography variant="body2" className="uppercase">
+                        {profileData.role}
+                    </Typography>
+                </Box>
+
+                {
+                    isRecipient && <Box component="form" sx={{ mt: 3 }}>
+                        <TextField
+                            label="Name"
+                            fullWidth
+                            name="name"
+                            value={profileData.name || ""}
+                            onChange={handleInputChange}
+                            disabled={!isEditing}
+                            margin="normal"
+                        />
+                        <TextField
+                            label="Email"
+                            fullWidth
+                            name="email"
+                            value={profileData.email || ""}
+                            disabled
+                            margin="normal"
+                        />
+                        <TextField
+                            label="Phone"
+                            fullWidth
+                            name="phone"
+                            value={profileData.phone || ""}
+                            onChange={handleInputChange}
+                            disabled={!isEditing}
+                            margin="normal"
+                        />
+                        <TextField
+                            label="Address"
+                            fullWidth
+                            name="address"
+                            value={profileData.address || ""}
+                            onChange={handleInputChange}
+                            disabled={!isEditing}
+                            margin="normal"
+                        />
+
+                        <Box sx={{ textAlign: "center", mt: 3 }}>
+                            {isEditing ? (
+                                <Button variant="contained" color="primary" onClick={handleRecipientSave}>
+                                    Save
+                                </Button>
+                            ) : (
+                                <Button
+                                    variant="outlined"
+                                    color="secondary"
+                                    onClick={handleEditToggle}
+                                >
+                                    Edit Profile
+                                </Button>
+                            )}
+                        </Box>
+                    </Box>
+                }
+                {
+                    isIndividualDonor && <Box component="form" sx={{ mt: 3 }}>
+                        <TextField
+                            label="Name"
+                            fullWidth
+                            name="name"
+                            value={profileData.name || ""}
+                            onChange={handleInputChange}
+                            disabled={!isEditing}
+                            margin="normal"
+                        />
+                        <TextField
+                            label="Email"
+                            fullWidth
+                            name="email"
+                            value={profileData.email || ""}
+                            disabled
+                            margin="normal"
+                        />
+                        <TextField
+                            label="Phone"
+                            fullWidth
+                            name="phone"
+                            value={profileData.phone || ""}
+                            onChange={handleInputChange}
+                            disabled={!isEditing}
+                            margin="normal"
+                        />
+                        <TextField
+                            label="Address"
+                            fullWidth
+                            name="address"
+                            value={profileData.address || ""}
+                            onChange={handleInputChange}
+                            disabled={!isEditing}
+                            margin="normal"
+                        />
+
+                        <Box sx={{ textAlign: "center", mt: 3 }}>
+                            {isEditing ? (
+                                <Button variant="contained" color="primary" onClick={handleIndividualSave}>
+                                    Save
+                                </Button>
+                            ) : (
+                                <Button
+                                    variant="outlined"
+                                    color="secondary"
+                                    onClick={handleEditToggle}
+                                >
+                                    Edit Profile
+                                </Button>
+                            )}
+                        </Box>
+                    </Box>
+                }
+                {
+                    isBusinessDonor && <Box component="form" sx={{ mt: 3 }}>
+                        <TextField
+                            label="Business Name"
+                            fullWidth
+                            name="businessName"
+                            value={profileData.businessName || ""}
+                            onChange={handleInputChange}
+                            disabled={!isEditing}
+                            margin="normal"
+                        />
+                        <TextField
+                            label="Contact Name"
+                            fullWidth
+                            name="contactName"
+                            value={profileData.contactName || ""}
+                            onChange={handleInputChange}
+                            disabled={!isEditing}
+                            margin="normal"
+                        />
+                        <TextField
+                            label="Email"
+                            fullWidth
+                            name="email"
+                            value={profileData.email || ""}
+                            disabled
+                            margin="normal"
+                        />
+                        <TextField
+                            label="Phone"
+                            fullWidth
+                            name="phone"
+                            value={profileData.phone || ""}
+                            onChange={handleInputChange}
+                            disabled={!isEditing}
+                            margin="normal"
+                        />
+                        <TextField
+                            label="Address"
+                            fullWidth
+                            name="address"
+                            value={profileData.address || ""}
+                            onChange={handleInputChange}
+                            disabled={!isEditing}
+                            margin="normal"
+                        />
+
+                        <TextField
+                            label="Website URL "
+                            fullWidth
+                            name="website"
+                            value={profileData.website || ""}
+                            onChange={handleInputChange}
+                            disabled={!isEditing}
+                            margin="normal"
+                        />
+
+                        <Box sx={{ textAlign: "center", mt: 3 }}>
+                            {isEditing ? (
+                                <Button variant="contained" color="primary" onClick={handleBusinessSave}>
+                                    Save
+                                </Button>
+                            ) : (
+                                <Button
+                                    variant="outlined"
+                                    color="secondary"
+                                    onClick={handleEditToggle}
+                                >
+                                    Edit Profile
+                                </Button>
+                            )}
+                        </Box>
+                    </Box>
+                }
             </Box>
-
-            {
-                isRecipient && <Box component="form" sx={{ mt: 3 }}>
-                    <TextField
-                        label="Name"
-                        fullWidth
-                        name="name"
-                        value={profileData.name || ""}
-                        onChange={handleInputChange}
-                        disabled={!isEditing}
-                        margin="normal"
-                    />
-                    <TextField
-                        label="Email"
-                        fullWidth
-                        name="email"
-                        value={profileData.email || ""}
-                        disabled
-                        margin="normal"
-                    />
-                    <TextField
-                        label="Phone"
-                        fullWidth
-                        name="phone"
-                        value={profileData.phone || ""}
-                        onChange={handleInputChange}
-                        disabled={!isEditing}
-                        margin="normal"
-                    />
-                    <TextField
-                        label="Address"
-                        fullWidth
-                        name="address"
-                        value={profileData.address || ""}
-                        onChange={handleInputChange}
-                        disabled={!isEditing}
-                        margin="normal"
-                    />
-
-                    <Box sx={{ textAlign: "center", mt: 3 }}>
-                        {isEditing ? (
-                            <Button variant="contained" color="primary" onClick={handleRecipientSave}>
-                                Save
-                            </Button>
-                        ) : (
-                            <Button
-                                variant="outlined"
-                                color="secondary"
-                                onClick={handleEditToggle}
-                            >
-                                Edit Profile
-                            </Button>
-                        )}
-                    </Box>
-                </Box>
-            }
-            {
-                isIndividualDonor && <Box component="form" sx={{ mt: 3 }}>
-                    <TextField
-                        label="Name"
-                        fullWidth
-                        name="name"
-                        value={profileData.name || ""}
-                        onChange={handleInputChange}
-                        disabled={!isEditing}
-                        margin="normal"
-                    />
-                    <TextField
-                        label="Email"
-                        fullWidth
-                        name="email"
-                        value={profileData.email || ""}
-                        disabled
-                        margin="normal"
-                    />
-                    <TextField
-                        label="Phone"
-                        fullWidth
-                        name="phone"
-                        value={profileData.phone || ""}
-                        onChange={handleInputChange}
-                        disabled={!isEditing}
-                        margin="normal"
-                    />
-                    <TextField
-                        label="Address"
-                        fullWidth
-                        name="address"
-                        value={profileData.address || ""}
-                        onChange={handleInputChange}
-                        disabled={!isEditing}
-                        margin="normal"
-                    />
-
-                    <Box sx={{ textAlign: "center", mt: 3 }}>
-                        {isEditing ? (
-                            <Button variant="contained" color="primary" onClick={handleIndividualSave}>
-                                Save
-                            </Button>
-                        ) : (
-                            <Button
-                                variant="outlined"
-                                color="secondary"
-                                onClick={handleEditToggle}
-                            >
-                                Edit Profile
-                            </Button>
-                        )}
-                    </Box>
-                </Box>
-            }
-            {
-                isBusinessDonor && <Box component="form" sx={{ mt: 3 }}>
-                    <TextField
-                        label="Business Name"
-                        fullWidth
-                        name="businessName"
-                        value={profileData.businessName || ""}
-                        onChange={handleInputChange}
-                        disabled={!isEditing}
-                        margin="normal"
-                    />
-                    <TextField
-                        label="Contact Name"
-                        fullWidth
-                        name="contactName"
-                        value={profileData.contactName || ""}
-                        onChange={handleInputChange}
-                        disabled={!isEditing}
-                        margin="normal"
-                    />
-                    <TextField
-                        label="Email"
-                        fullWidth
-                        name="email"
-                        value={profileData.email || ""}
-                        disabled
-                        margin="normal"
-                    />
-                    <TextField
-                        label="Phone"
-                        fullWidth
-                        name="phone"
-                        value={profileData.phone || ""}
-                        onChange={handleInputChange}
-                        disabled={!isEditing}
-                        margin="normal"
-                    />
-                    <TextField
-                        label="Address"
-                        fullWidth
-                        name="address"
-                        value={profileData.address || ""}
-                        onChange={handleInputChange}
-                        disabled={!isEditing}
-                        margin="normal"
-                    />
-
-                    <TextField
-                        label="Website URL "
-                        fullWidth
-                        name="website"
-                        value={profileData.website || ""}
-                        onChange={handleInputChange}
-                        disabled={!isEditing}
-                        margin="normal"
-                    />
-
-                    <Box sx={{ textAlign: "center", mt: 3 }}>
-                        {isEditing ? (
-                            <Button variant="contained" color="primary" onClick={handleBusinessSave}>
-                                Save
-                            </Button>
-                        ) : (
-                            <Button
-                                variant="outlined"
-                                color="secondary"
-                                onClick={handleEditToggle}
-                            >
-                                Edit Profile
-                            </Button>
-                        )}
-                    </Box>
-                </Box>
-            }
-        </Box>
+        </div>
     );
 };
 
