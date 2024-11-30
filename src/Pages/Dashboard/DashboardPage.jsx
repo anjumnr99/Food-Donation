@@ -8,10 +8,10 @@ const DashboardPage = () => {
   console.log(isRecipient);
 
   return (
-    <div className=" pb-20 px-2 md:px-5">
+    <div className=" pb-20 ">
       <div className=" grid grid-cols-1 md:grid-cols-12 gap-2">
         {/* dashboard side bar */}
-        <div className="w-full md:col-span-4 lg:col-span-2 h-screen md:min-h-fit bg-blue-400">
+        <div className="w-full md:col-span-4 lg:col-span-2 h-screen md:min-h-fit bg-green-400">
           <div className="menu p-1 md:p-4 ">
             {
               isRecipient ?
@@ -19,12 +19,12 @@ const DashboardPage = () => {
                   <li>
                     <NavLink to="/dashboard/recipient-applied-request" className={`p-2 rounded-sm`}>
 
-                      Apply for donation</NavLink>
+                      Create Food Request</NavLink>
                   </li>
                   <li>
                     <NavLink to="/dashboard/recipient-nearest-donation" className={`p-2 rounded-sm`}>
 
-                      Nearby Donation </NavLink>
+                      Nearby Offered Donation </NavLink>
                   </li>
                   <li>
                     <NavLink to="/dashboard/recipient-history" className={`p-2 rounded-sm`}>

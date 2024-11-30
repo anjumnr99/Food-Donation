@@ -21,6 +21,8 @@ import toast from 'react-hot-toast';
 import useRecipient from '../Hooks/useRecipient';
 import useIndividualDonor from '../Hooks/useIndividualDonor';
 import useBusinessDonor from '../Hooks/useBusinessDonor';
+import { green, lightGreen } from '@mui/material/colors';
+
 const Search = styled('div')(({ theme }) => ({
     position: 'relative',
     borderRadius: theme.shape.borderRadius,
@@ -152,7 +154,7 @@ const Navbar = () => {
             }
 
             <MenuItem onClick={handleMenuClose}>
-                <button onClick={handleLogOut} className="block w-full  text-md font-semibold text-blue-600 hover:bg-blue-100 dark:hover:bg-blue-600 dark:text-blue-500 dark:hover:text-white"> Logout
+                <button onClick={handleLogOut} className="block w-full  text-md font-semibold text-green-600 hover:bg-green-100 dark:hover:bg-green-600 dark:text-green-500 dark:hover:text-white"> Logout
                 </button></MenuItem>
         </Menu>
     );
@@ -212,9 +214,9 @@ const Navbar = () => {
 
     return (
         <Box sx={{ flexGrow: 1 }}>
-            <AppBar position="static">
+            <AppBar position="static" sx={{ backgroundColor: '#505050' }} >
                 <Toolbar>
-                    <IconButton
+                    {/* <IconButton
                         size="large"
                         edge="start"
                         color="inherit"
@@ -222,14 +224,14 @@ const Navbar = () => {
                         sx={{ mr: 2 }}
                     >
                         <MenuIcon />
-                    </IconButton>
+                    </IconButton> */}
                     <Typography
                         variant="h4"
                         noWrap
                         component="div"
                         sx={{ display: { xs: 'none', sm: 'block' } }}
                     >
-                        MUI
+                        give&take
                     </Typography>
                     <Search>
                         <SearchIconWrapper>
@@ -245,11 +247,7 @@ const Navbar = () => {
                     {
                         user?.email ? <div>
                             <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
-                                <IconButton size="large" aria-label="show 4 new mails" color="inherit">
-                                    <Badge badgeContent={4} color="error">
-                                        <MailIcon />
-                                    </Badge>
-                                </IconButton>
+                                
                                 <IconButton
                                     size="large"
                                     aria-label="show 17 new notifications"

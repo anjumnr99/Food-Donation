@@ -257,7 +257,7 @@ const History = () => {
                                     <Typography variant="h6">
                                         Request ID: <span className='text-gray-500'>{selectedRequest?.food_request_id}</span>
                                     </Typography>
-                                    <Typography>Item Name: <span className='text-gray-500'>{selectedRequest?.item_mane}</span></Typography>
+                                    <Typography>Item Name: <span className='text-gray-500'>{selectedRequest?.item_name}</span></Typography>
                                     <Typography>Location: <span className='text-gray-500'>{selectedRequest?.location}</span></Typography>
                                     <Typography>Quantity: <span className='text-gray-500'>{selectedRequest?.quantity}</span></Typography>
                                     <Typography>Contact Number: <span className='text-gray-500'>{selectedRequest?.contact_number}</span></Typography>
