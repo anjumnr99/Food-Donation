@@ -19,6 +19,7 @@ const ApplyRequest = () => {
       const quantity = e.target?.quantity?.value;
       const note = e.target?.note?.value;
       const requested_by = user?.email;
+      const accepted_by = " ";
       const location = e.target?.location?.value;
       const contact_number = e.target?.contact_number?.value;
       const request_status = "pending"
@@ -29,6 +30,7 @@ const ApplyRequest = () => {
         quantity,
         note,
         requested_by,
+        accepted_by,
         location,
         contact_number,
         request_status

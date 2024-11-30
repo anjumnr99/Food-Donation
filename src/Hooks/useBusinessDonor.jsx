@@ -11,7 +11,7 @@ const useBusinessDonor = () => {
         queryKey: [user?.email,'isBusinessDonor'],
         queryFn: async() =>{
             const res = await axiosPublic.get(`/businessDonor/${user?.email}`);
-            return res.data?.businessDonor;
+            return res.data;
         },
         enabled: !!user?.email,
 

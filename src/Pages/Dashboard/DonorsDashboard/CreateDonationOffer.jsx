@@ -25,7 +25,8 @@ const CreateDonationOffer = () => {
         const expire_date = e.target?.expire_date?.value;
         const notes = e.target?.notes?.value;
         const created_by = user?.email;
-        const status = 'pending';
+        const creation_status = 'available';
+        const accepting_status ='pending'
 
 
         const newDonation = {
@@ -36,7 +37,8 @@ const CreateDonationOffer = () => {
             expire_date,
             notes,
             created_by,
-            status    
+            creation_status ,
+            accepting_status   
         }
         console.log("Donation Submitted:", newDonation);
         axiosPublic.post('/add-donation', newDonation)
