@@ -2,49 +2,105 @@
 import { Card, CardContent, Typography, Button, Box, Grid2 } from "@mui/material";
 import useRecipient from "../../../Hooks/useRecipient";
 import useAxiosPublic from "../../../Hooks/useAxiosPublic";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
+import { AuthContext } from "../../../Authentication/AuthProvider";
+import { useQuery } from "@tanstack/react-query";
 
 const NearestDonation = () => {
-  const { findRecipient } = useRecipient();
-  const [donations, setDonations] = useState([]);
+  const { recipient } = useRecipient();
+  const { user } = useContext(AuthContext);
+  // const [donations, setDonations] = useState([]);
   const axiosPublic = useAxiosPublic();
-  const recipientAddress = findRecipient?.address;
+  const recipientAddress = recipient?.address;
 
   console.log(recipientAddress);
 
-  useEffect(() => {
-    const fetchNearbyDonations = async () => {
-      try {
-        const res = await axiosPublic.get(`/donations/nearby/${recipientAddress}`);
-        setDonations(res.data);
-      } catch (error) {
-        console.error("Error fetching donations:", error);
-      }
-    };
-    fetchNearbyDonations();
-  }, [axiosPublic, recipientAddress]);
+  const { data: donations, refetch, isLoading } = useQuery({
+    queryKey: ['donations'],
+    queryFn: async () => {
+      const res = await axiosPublic.get(`/donations/nearby/${recipientAddress}`);
+      return res.data;
+    }
+  })
+
+  // useEffect(() => {
+  //   const fetchNearbyDonations = async () => {
+  //     try {
+  //       const res = await axiosPublic.get(`/donations/nearby/${recipientAddress}`);
+  //       setDonations(res.data);
+  //     } catch (error) {
+  //       console.error("Error fetching donations:", error);
+  //     }
+  //   };
+  //   fetchNearbyDonations();
+  // }, [axiosPublic, recipientAddress]);
 
   console.log(donations);
+
+  const handleAcceptDonation = (id) => {
+    const acceptedBy = { acceptedBy: user?.email };
+
+    axiosPublic
+      .patch(`/donation/accept/${id}`, acceptedBy)
+      .then((res) => {
+        console.log("Accept Donation", id);
+        console.log(res.data);
+        refetch();
+      })
+      .catch((err) => {
+        console.error("Error accepting donation:", err);
+      });
+  };
+
+  const handleDeclineDonation = (id) => {
+    console.log("Decline Donation", id);
+    axiosPublic.patch(`/donation/decline/${id}`)
+      .then((res) => {
+        console.log(res.data);
+        refetch();
+      })
+      .catch((err) => {
+        console.error("Error accepting donation:", err);
+      });
+  };
+
+  if (isLoading) {
+    return <div className="flex justify-center items-center h-[80vh] ">
+      <div className="w-20 h-20 border-4 border-dashed rounded-full animate-spin border-green-700"></div>
+    </div>
+  }
 
 
   return (
     <Box sx={{ padding: "20px" }}>
       <Typography variant="h4" mb={3}>Nearby Donations</Typography>
-      {donations.length > 0 ? (
+      {donations?.length > 0 ? (
         <div>
           <Grid2 container spacing={2}>
             {
               donations.map((donation) => (
-                <Card key={donation.donation_id} sx={{ marginBottom: "15px" }}>
+                <Card key={donation._id} sx={{ marginBottom: "15px" }}>
                   <CardContent>
                     <Typography variant="h6">{donation.item_name}</Typography>
                     <Typography>Quantity: {donation.quantity} lbs</Typography>
                     <Typography>Location: {donation.location}</Typography>
                     <Typography>Expiry Date: {donation.expire_date}</Typography>
                     <Typography>Notes: {donation.notes}</Typography>
-                    <Button variant="contained" color="primary" sx={{ marginTop: "10px" }}>
-                      Claim Donation
-                    </Button>
+                    
+                    {
+                      donation?.accepted_by == user?.email ? <div>
+                        <Typography variant="h6" sx={{ color: "green" }}>You Accepted this donation</Typography><Button
+                          onClick={() => handleDeclineDonation(donation._id)}
+                          variant="contained" color="error" sx={{ marginTop: "10px" }}>
+                          Decline
+                        </Button>
+                      </div> : <Button
+                        onClick={() => handleAcceptDonation(donation._id)}
+                        variant="contained" color="primary" sx={{ marginTop: "10px" }}>
+                        Accept Donation
+                      </Button>
+                    }
+
                   </CardContent>
                 </Card>
               ))

@@ -44,7 +44,7 @@ const DashboardPage = () => {
                   </li>
                   <li>
                     <NavLink to="/dashboard/donors-donation-offers" className={`p-2 rounded-sm`}>
-                      Donation Offers by Me </NavLink>
+                      My Active Donation Offers </NavLink>
                   </li>
                   <li>
                     <NavLink to="/dashboard/donors-past-donation" className={`p-2 rounded-sm`}>
