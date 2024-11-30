@@ -5,6 +5,7 @@ import useIndividualDonor from "../../../Hooks/useIndividualDonor";
 import useAxiosPublic from "../../../Hooks/useAxiosPublic";
 import { AuthContext } from "../../../Authentication/AuthProvider";
 import { useQuery } from "@tanstack/react-query";
+import AddNotificationContent from "../../../Components/AddNotificationContent";
 
 
 const DonorsNearbyRequest = () => {
@@ -35,24 +36,56 @@ const DonorsNearbyRequest = () => {
 
   console.log(acceptedRequests);
 
-  const handleAcceptDonation = (id) => {
-    console.log("Accept Donation", id);
-    // Wrap in an object
+  const handleAcceptDonation = (id, request) => {
+    console.log("Accept Donation", id, request);
+
     axiosPublic.patch(`/foodRequest/accept/${id}`, acceptedBy) // Pass as second argument
       .then((res) => {
         console.log(res.data);
-        refetch();
+        if (res.data?.modifiedCount) {
+          const dataId = id;
+          const message = `A Donor Accepted your Food Request`;
+          const sent_to = request.requested_by;
+          const from = user.email;
+
+          const notificationData = {
+            dataId,
+            message,
+            sent_to,
+            from
+          }
+          
+          AddNotificationContent(notificationData);
+        }
       })
       .catch((err) => {
         console.error("Error accepting donation:", err);
       });
+
   };
-  const handleDeclineDonation = (id) => {
-    console.log("Decline Donation", id);
-    axiosPublic.patch(`/foodRequest/decline/${id}`) // Pass as second argument
+  const handleDeclineDonation = (id, request) => {
+    console.log("Decline Donation", id, request);
+    axiosPublic.patch(`/foodRequest/decline/${id}`)
       .then((res) => {
         console.log(res.data);
-        refetch();
+        if (res.data?.modifiedCount) {
+          const dataId = id;
+          const message = `A Donor Decline your Food Request`;
+          const sent_to = request.requested_by;
+          const from = user.email;
+
+          const notificationData = {
+            dataId,
+            message,
+            sent_to,
+            from
+
+          }
+          AddNotificationContent(notificationData);
+          
+        }
+
+
       })
       .catch((err) => {
         console.error("Error accepting donation:", err);
@@ -115,18 +148,18 @@ const DonorsNearbyRequest = () => {
                       <Typography>Expiry Date: {request.expire_date}</Typography>
                       <Typography>Notes: {request.notes}</Typography>
                       {
-                      request?.accepted_by == user?.email ? <div>
-                        <Typography variant="h6" sx={{ color: "green" }}>You Accepted this Food Request</Typography><Button
-                          onClick={() => handleDeclineDonation(request._id)}
-                          variant="contained" color="error" sx={{ marginTop: "10px" }}>
-                          Decline
+                        request?.accepted_by == user?.email ? <div>
+                          <Typography variant="h6" sx={{ color: "green" }}>You Accepted this Food Request</Typography><Button
+                            onClick={() => handleDeclineDonation(request._id, request)}
+                            variant="contained" color="error" sx={{ marginTop: "10px" }}>
+                            Decline
+                          </Button>
+                        </div> : <Button
+                          onClick={() => handleAcceptDonation(request._id, request)}
+                          variant="contained" color="primary" sx={{ marginTop: "10px" }}>
+                          Accept Food Request
                         </Button>
-                      </div> : <Button
-                        onClick={() => handleAcceptDonation(request._id)}
-                        variant="contained" color="primary" sx={{ marginTop: "10px" }}>
-                        Accept Food Request
-                      </Button>
-                    }
+                      }
 
                     </CardContent>
                   </Card>
