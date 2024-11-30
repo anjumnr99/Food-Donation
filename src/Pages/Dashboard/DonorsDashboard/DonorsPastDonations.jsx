@@ -13,13 +13,13 @@ const DonorsPastDonations = () => {
   const axiosPublic = useAxiosPublic();
 
   const { data: closedDonations } = useQuery({
-    queryKey: ['closedDonations', user?.email], // Include email in query key for proper caching
+    queryKey: ['closedDonations', user?.email], 
     queryFn: async () => {
       const res = await axiosPublic.get(`/closedDonations/donors?email=${user?.email}`);
       console.log('Response data:', res.data);
       return res.data;
     },
-    enabled: !!user?.email, // Ensure query runs only if email is available
+    enabled: !!user?.email, 
   });
 console.log('closedDonations:', closedDonations);
 

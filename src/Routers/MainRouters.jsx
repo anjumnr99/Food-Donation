@@ -20,12 +20,30 @@ import DonorsPastDonations from "../Pages/Dashboard/DonorsDashboard/DonorsPastDo
 import CreateDonationOffer from "../Pages/Dashboard/DonorsDashboard/CreateDonationOffer";
 import ApplyRequest from "../Pages/Dashboard/RecipientDashboard/ApplyRequest";
 import MyAccountPage from "../Pages/MyAccountPage";
+import HomePage from "../Pages/HomePage";
+import AboutUsPage from "../Pages/AboutUsPage";
+import HowItWorksPage from "../Pages/HowItWorksPage";
 
 const MainRouters = createBrowserRouter([
   {
     path: "/",
     element: <MainLayout></MainLayout>,
     children: [
+      {
+        path: "/",
+        element: <HomePage></HomePage>,
+
+      },
+      {
+        path: "/about-us",
+        element:<AboutUsPage></AboutUsPage>
+
+      },
+      {
+        path: "/how-it-works",
+        element:<HowItWorksPage></HowItWorksPage>
+
+      },
       {
         path: "/login",
         element: <LoginPage></LoginPage>

@@ -1,4 +1,4 @@
-import { Box, Button, Card, CardContent, Grid2, Typography } from "@mui/material";
+import { Box, Button, Card, CardContent, Dialog, DialogActions, DialogContent, DialogTitle, Grid2, Typography } from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../../Authentication/AuthProvider";
@@ -12,6 +12,9 @@ const DonorsDonationOffers = () => {
 
   const axiosPublic = useAxiosPublic();
   const [offers, setOffers] = useState([]);
+  const [open, setOpen] = useState(false);
+  const [recipientDetail, setRecipientDetail] = useState(null);
+
 
   const { data: donations, refetch } = useQuery({
     queryKey: ['activeDonation'],
@@ -54,7 +57,7 @@ const DonorsDonationOffers = () => {
       })
   };
 
-  const handleConfirm = (id,donation) => {
+  const handleConfirm = (id, donation) => {
 
     axiosPublic.patch(`/donation/confirm/${id}`)
       .then(res => {
@@ -63,7 +66,7 @@ const DonorsDonationOffers = () => {
         if (res.data?.modifiedCount) {
           const dataId = id;
           const message = `Donor confirm the donation you have requested`;
-          const sent_to = donation.accepted_by;
+          const sent_to = donation?.accepted_by;
           const from = user.email;
 
           const notificationData = {
@@ -72,14 +75,14 @@ const DonorsDonationOffers = () => {
             sent_to,
             from
           }
-          
-          AddNotificationContent(notificationData);
+
+          AddNotificationContent(notificationData,refetch );
         }
-        
+
       })
   }
-  const handleReject = (id,donation) => {
-    const recvMail = donation.accepted_by;
+  const handleReject = (id, donation) => {
+    const recvMail = donation?.accepted_by;
     axiosPublic.patch(`/donation/reject/${id}`)
       .then(res => {
         console.log(res.data);
@@ -87,7 +90,7 @@ const DonorsDonationOffers = () => {
         if (res.data?.modifiedCount) {
           const dataId = id;
           const message = `Donor reject the donation you have requested`;
-          const sent_to = recvMail ;
+          const sent_to = recvMail;
           const from = user.email;
 
           const notificationData = {
@@ -96,13 +99,13 @@ const DonorsDonationOffers = () => {
             sent_to,
             from
           }
-          
-          AddNotificationContent(notificationData);
+
+          AddNotificationContent(notificationData,refetch );
         }
         refetch();
       })
   }
-  const handleComplete = (id,donation) => {
+  const handleComplete = (id, donation) => {
     axiosPublic.patch(`/donation/complete/${id}`)
       .then(res => {
         console.log(res.data);
@@ -119,10 +122,10 @@ const DonorsDonationOffers = () => {
             sent_to,
             from
           }
-          
-          AddNotificationContent(notificationData);
+
+          AddNotificationContent(notificationData,refetch );
         }
-        
+
       })
   }
   const handleCloseDonation = (id) => {
@@ -133,6 +136,26 @@ const DonorsDonationOffers = () => {
         refetch();
       })
   }
+
+  const handleDetailsOpen = (email) => {
+
+    axiosPublic.get(`/recipient/${email}`)
+      .then(res => {
+        console.log(res.data);
+        const recipient = res.data?.findRecipient;
+        console.log(recipient);
+        setRecipientDetail(recipient);
+      })
+      .catch(err=>{
+        console.log(err);
+      })
+      setOpen(true);
+  };
+
+  const handleDetailsClose = () => {
+    setRecipientDetail(null);
+    setOpen(false);
+  };
 
   return (
     <Box sx={{ padding: "20px" }}>
@@ -165,6 +188,15 @@ const DonorsDonationOffers = () => {
                             onClick={() => handleReject(offer._id)}
                             variant="contained" color="info" sx={{ marginTop: "10px" }}>
                             Reject
+                          </Button>
+                          <Button
+                            variant="contained"
+                            color="primary"
+                            size="small"
+                            onClick={() => handleDetailsOpen(offer?.accepted_by)}
+
+                          >
+                            Recipient details
                           </Button>
                         </div>
                       </div>
@@ -212,6 +244,28 @@ const DonorsDonationOffers = () => {
               ))
             }
           </Grid2>
+          {/* Popup for Request Details */}
+          <Dialog open={open} onClose={handleDetailsClose}>
+            <DialogTitle>Recipient Details</DialogTitle>
+            <DialogContent>
+              {recipientDetail ? (
+                <div>
+                  <Typography>Recipient Name: <span className='text-gray-500'>{recipientDetail?.name}</span></Typography>
+                  <Typography>Email: <span className='text-gray-500'>{recipientDetail?.email}</span></Typography>
+                  <Typography>Contact Number: <span className='text-gray-500'>{recipientDetail?.phone}</span></Typography>
+                  <Typography>Address: <span className='text-gray-500'>{recipientDetail?.address}</span></Typography>
+
+                </div>
+              ) : (
+                <Typography>No details available.</Typography>
+              )}
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={handleDetailsClose} color="primary">
+                Close
+              </Button>
+            </DialogActions>
+          </Dialog>
         </div>
 
       ) : (
